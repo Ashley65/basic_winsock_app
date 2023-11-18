@@ -96,6 +96,7 @@ SOCKET TCP_server::listen() const {
 
 SOCKET TCP_server::accept() {
 
+    std::cout << "accept process started" << std::endl;
     client_socket = INVALID_SOCKET;
     //Accept and incoming connection
     client_socket = ::accept(socket_desc, nullptr, nullptr);
@@ -110,6 +111,31 @@ SOCKET TCP_server::accept() {
 }
 
 int TCP_server::receive() {
+
+    std::cout << "receive process started" << std::endl;
+    struct timeval tv;
+    tv.tv_sec = 10; // 10 Secs Timeout
+    tv.tv_usec = 0; // Not initiating this can cause strange errors
+
+    if (setsockopt(client_socket, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv,sizeof(tv)) < 0) {
+        std::cout << "setsockopt failed" << WSAGetLastError()<<std::endl;
+        closesocket(client_socket);
+        WSACleanup();
+        exit(1);
+    }
+// receive a message from a client
+    while ((read_size = recv(client_socket, client_message, 2000, 0)) > 0) {
+        //Send the message back to client
+        write(client_socket, client_message, strlen(client_message));
+    }
+    if (read_size == 0) {
+        std::cout << "Client disconnected" << std::endl;
+        fflush(stdout);
+    } else if (read_size == -1) {
+        std::cout << "recv failed" << std::endl;
+    }
+
+    return read_size;
 
 
 }

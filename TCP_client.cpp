@@ -7,6 +7,7 @@
 
 
 TCP_client::TCP_client() {
+    system("Color 0A");
     WSADATA wsaData;
 
 
@@ -54,6 +55,8 @@ TCP_client::TCP_client() {
 
 
 
+
+
 }
 
 int TCP_client::connect() {
@@ -85,6 +88,20 @@ int TCP_client::connect() {
 TCP_client::~TCP_client() {
     closesocket(socket_desc);
     WSACleanup();
+
+}
+
+int TCP_client::send(const char *message) {
+    //send an initial buffer
+    iResult = ::send(ConnectSocket, message, (int) strlen(message), 0);
+    if (iResult == SOCKET_ERROR) {
+        std::cout << "Send failed with error: " << WSAGetLastError() << std::endl;
+        closesocket(ConnectSocket);
+        WSACleanup();
+        exit(1);
+    }
+    std::cout << "Bytes Sent: " << iResult << std::endl;
+
 
 }
 

@@ -22,10 +22,13 @@ private:
     char server_reply[2000]{};
     int iResult{};
     SOCKET ConnectSocket = INVALID_SOCKET;
+    int recvbuflen = DEFAULT_BUFLEN;
 
 public:
     TCP_client();
     ~TCP_client();
+
+    
 
     //Connect to remote server
     int connect();
@@ -34,7 +37,7 @@ public:
 
 
     char recvbuf[DEFAULT_BUFLEN]{};
-    int recvbuflen = DEFAULT_BUFLEN;
+
 
 
     //Send some data
