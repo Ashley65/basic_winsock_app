@@ -47,7 +47,7 @@ public:
     SOCKET accept();
 
      //Receive a message from a client
-     int receive();
+     int receive() const;
 
 
     //Send a message to the client

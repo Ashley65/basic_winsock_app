@@ -112,7 +112,7 @@ SOCKET TCP_server::accept() {
 
 }
 
-int TCP_server::receive() {
+int TCP_server::receive() const {
 
     std::cout << "receive process started" <<std::endl;
 

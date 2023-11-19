@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "TCP_client.h"
+#include <thread>
 
 
 TCP_client::TCP_client() {
@@ -63,25 +64,24 @@ TCP_client::TCP_client() {
 
 int TCP_client::connect() {
 
+    while(true){
+        // Attempt to connect to the first address returned by
+        iResult = ::connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+        if (iResult == SOCKET_ERROR) {
+            closesocket(ConnectSocket);
+            ConnectSocket = INVALID_SOCKET;
+            ptr = ptr->ai_next;
+            std::cout << "Attempting to connect to server..." << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        }
+        else{
+            std::cout << "Connected to server" << std::endl;
+            break;
+        }
 
-    //Connect to remote server
-    iResult = ::connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-    if (iResult == SOCKET_ERROR) {
-        closesocket(ConnectSocket);
-        ConnectSocket = INVALID_SOCKET;
     }
 
-    // if connection failed then try the next address returned by getaddrinfo
-    // if the socket failed to connect to any address returned by getaddrinfo
-
-    freeaddrinfo(result);
-
-    if (ConnectSocket == INVALID_SOCKET) {
-        std::cout << "Unable to connect to server!" << std::endl;
-        WSACleanup();
-        exit(1);
-    }
-    std::cout << "Connected to server" << std::endl;
+    return iResult;
 
 
 
