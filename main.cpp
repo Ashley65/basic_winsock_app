@@ -1,35 +1,39 @@
 #include <iostream>
 #include "TCP_server.h"
 #include <thread>
+#include <future>
 #include "TCP_client.h"
 
 int main() {
 
     TCP_server server;
-    bool serverReady = false;
+    std::promise<void> serverReadyPromise;
+    std::future<void> serverReadyFuture = serverReadyPromise.get_future();
 
     //start the server in a new thread
-    std::thread server_thread([&server, &serverReady](){
+    std::thread server_thread([&server, &serverReadyPromise](){
         server.listen();
         server.accept();
-        serverReady = true;
+        serverReadyPromise.set_value(); //signal that the server is ready
         while (server.receive() == 0) {
            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
 
     });
+
     //start the client
     TCP_client client;
 
-    //give the server time to start
-    while (!serverReady) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
+
+    serverReadyFuture.wait(); //wait for the server to be ready
+    client.send("Hello from client");
+
+
 
 
 
     //send a message to the server
-    client.send("Hello from client");
+
 
 
     server_thread.join();

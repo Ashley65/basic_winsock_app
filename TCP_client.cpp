@@ -53,6 +53,8 @@ TCP_client::TCP_client() {
     // Connect to server.
     connect();
 
+    send("Hello from client");
+
 
 
 
@@ -92,6 +94,13 @@ TCP_client::~TCP_client() {
 }
 
 int TCP_client::send(const char *message) {
+    if (ConnectSocket == INVALID_SOCKET) {
+        std::cout << "Unable to connect to server!" << std::endl;
+        WSACleanup();
+        exit(1);
+    }
+
+    std::cout << "Sending message to server..." << std::endl;
     //send an initial buffer
     iResult = ::send(ConnectSocket, message, (int) strlen(message), 0);
     if (iResult == SOCKET_ERROR) {
@@ -101,6 +110,8 @@ int TCP_client::send(const char *message) {
         exit(1);
     }
     std::cout << "Bytes Sent: " << iResult << std::endl;
+
+    return iResult;
 
 
 }
