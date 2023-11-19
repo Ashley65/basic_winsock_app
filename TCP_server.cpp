@@ -158,6 +158,26 @@ int TCP_server::receive() const {
 
 int TCP_server::send(const char *message) {
 
+    std::cout << "send process started" << std::endl;
+    if (client_socket == INVALID_SOCKET) {
+        std::cout << "Unable to connect to server!" << std::endl;
+        WSACleanup();
+        exit(1);
+    }
+
+    std::cout << "Sending message to server..." << std::endl;
+    //send an initial buffer
+    iResult = ::send(client_socket, message, (int) strlen(message), 0);
+    if (iResult == SOCKET_ERROR) {
+        std::cout << "Send failed with error: " << WSAGetLastError() << std::endl;
+        closesocket(client_socket);
+        WSACleanup();
+        exit(1);
+    }
+
+    return iResult;
+
+
 }
 
 

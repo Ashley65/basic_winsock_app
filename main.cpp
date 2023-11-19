@@ -13,11 +13,14 @@ int main() {
     //start the server in a new thread
     std::thread server_thread([&server, &serverReadyPromise](){
         server.listen();
+        serverReadyPromise.set_value();
         server.accept();
-        serverReadyPromise.set_value(); //signal that the server is ready
+         //signal that the server is ready
         while (server.receive() == 0) {
            std::this_thread::sleep_for(std::chrono::milliseconds(100));
         }
+        server.send("Hello from server");
+
 
     });
 
@@ -27,6 +30,13 @@ int main() {
 
     serverReadyFuture.wait(); //wait for the server to be ready
     client.send("Hello from client");
+
+    client.receive();
+
+
+
+
+
 
 
 

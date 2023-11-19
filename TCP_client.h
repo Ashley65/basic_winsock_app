@@ -44,7 +44,7 @@ public:
     int send(const char *message);
 
     //Receive a reply from the server
-    int receive();
+    int receive() ;
 
     //Close the socket
     void close();

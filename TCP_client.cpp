@@ -54,7 +54,8 @@ TCP_client::TCP_client() {
     // Connect to server.
     connect();
 
-    send("Hello from client");
+
+
 
 
 
@@ -75,6 +76,7 @@ int TCP_client::connect() {
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
         else{
+            //
             std::cout << "Connected to server" << std::endl;
             break;
         }
@@ -114,6 +116,44 @@ int TCP_client::send(const char *message) {
     return iResult;
 
 
+}
+
+int TCP_client::receive() {
+    //Receive a reply from the server
+    std::cout << "Receiving message from server..." << std::endl;
+
+    struct timeval timeout;
+    timeout.tv_sec = 10; // 10 seconds
+    timeout.tv_usec = 0; // Not initiating this can cause strange errors
+
+    if (setsockopt(ConnectSocket, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout, sizeof(timeout)) < 0) {
+        std::cout << "setsockopt failed" <<WSAGetLastError() << std::endl;
+        return 0;
+    }
+    std::cout << "test check 1" << std::endl;
+
+    // receive a message from server
+    while (true){
+        std::cout << "test check 2" << std::endl;
+
+        int readSize = recv(ConnectSocket, server_reply, sizeof(server_reply) , 0);
+        if (readSize > 0) {
+            std::cout << "Message received" << std::endl;
+            std::cout << server_reply << std::endl;
+            return 1;
+        } else if (readSize == 0) {
+            std::cout << "Client disconnected" << std::endl;
+            fflush(stdout);
+            break;
+        } else {
+            std::cout << "recv failed with error: " << WSAGetLastError() << std::endl;
+            closesocket(ConnectSocket);
+            WSACleanup();
+            exit(1);
+        }
+
+
+    }
 }
 
 
