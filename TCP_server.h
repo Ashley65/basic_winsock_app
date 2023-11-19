@@ -57,7 +57,7 @@ public:
     int iResult{};
 
     //Close the socket
-    void close();
+    void close() const;
 
     // table to keep track of clients socket
     std::map<int, SOCKET> client_sockets;

@@ -180,5 +180,12 @@ int TCP_server::send(const char *message) {
 
 }
 
+void TCP_server::close() const {
+        std::cout << "close process started" << std::endl;
+        closesocket(client_socket);
+        WSACleanup();
+
+}
+
 
 

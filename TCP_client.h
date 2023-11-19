@@ -47,7 +47,7 @@ public:
     int receive() ;
 
     //Close the socket
-    void close();
+    void close() const;
 
     //for error checking'
 

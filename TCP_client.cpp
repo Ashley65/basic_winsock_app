@@ -156,4 +156,10 @@ int TCP_client::receive() {
     }
 }
 
+void TCP_client::close() const {
+    std::cout << "close process started" << std::endl;
+    closesocket(ConnectSocket);
+    WSACleanup();
+}
+
 
