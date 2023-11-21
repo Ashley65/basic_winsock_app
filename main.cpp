@@ -4,6 +4,10 @@
 #include <future>
 #include "TCP_client.h"
 
+
+
+
+
 int main() {
 
     TCP_server server;
@@ -38,15 +42,10 @@ int main() {
 
 
 
-
-
-
-
-
-
     //send a message to the server
 
 
 
     server_thread.join();
 }
+
